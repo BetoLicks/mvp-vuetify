@@ -4,7 +4,7 @@
     <v-snackbar
       v-model="notification.show.value"
       :timeout="notification.timeout.value"
-      color="notification.color.value"
+      :color="notification.color.value"
       {{notification.message.value}}
     ></v-snackbar>
   </v-app>

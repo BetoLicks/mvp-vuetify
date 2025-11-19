@@ -16,10 +16,10 @@
               <h2 class="text-primary">Faça seu cadastro</h2>
             </div>
 
-            <v-text-field v-model="formData.name" label="Nome" :rules="[rules.required]" type="text" variant="outlined" class="mb-4"></v-text-field>
+            <v-text-field v-model="formData.nome" label="Nome" :rules="[rules.required]" type="text" variant="outlined" class="mb-4"></v-text-field>
             <v-text-field v-model="formData.email" label="Email" :rules="[rules.required, rules.email]" type="email" variant="outlined" class="mb-4"></v-text-field>
             <v-text-field
-               v-model="formData.password"
+               v-model="formData.senha"
                :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
                 :type="visible ? 'text' : 'password'"
                 label="Senha"
@@ -48,6 +48,14 @@
 
 import axios from 'axios';
 
+import {useNotification} from '@/composables/useNotification';
+
+import { useRouter } from 'vue-router';
+
+const notification = useNotification();
+
+const router = useRouter();
+
 //const urlAPI = 'https://api.areteacademy.com.br/api';
 
 
@@ -62,33 +70,14 @@ const formData = ref({
 });
 
 async function createUser(){
-
-
-
-
   try {
-    const response = await axios.get('http://127.0.0.1/ProteusCRM/api/usuarios/create');
-    console.log(response);
+    await axios.get('http://127.0.0.1/ProteusCRM/api/usuarios/create',...formData.value);
+    notification.success('Usuário cadastrado com sucesso!');
+    router.push({ name: 'login' });
   } catch (error) {
     notification.error('Erro ao cadastrar usuário: ' + error.message);
   }
 }
-/*
-fetch('http://127.0.0.1/ProteusCRM/api/usuarios/create', formData)
-  .then(res => res.json())
-  .then(console.log)
-  .catch(error => {
-    Notification.error('Erro ao cadastrar usuário: ' + error.message);
-  }
-
-  );
-    Notification.success('Usuário cadastrado com sucesso!');
-  } catch (error) {
-    Notification.error('Erro ao cadastrar usuário: ' + error.message);
-  }
-    */
-
-
 
 const rules = {
   required: value => !!value || 'É necessário informar este campo.',
