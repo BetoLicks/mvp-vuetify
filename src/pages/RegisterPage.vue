@@ -16,9 +16,18 @@
               <h2 class="text-primary">Faça seu cadastro</h2>
             </div>
 
-            <v-text-field label="Nome" :rules="[rules.required]" type="text" variant="outlined" class="mb-4"></v-text-field>
-            <v-text-field label="Email" :rules="[rules.required, rules.email]" type="email" variant="outlined" class="mb-4"></v-text-field>
-            <v-text-field label="Senha" :rules="[rules.required, rules.counter]" type="password" variant="outlined" class="mb-4"></v-text-field>
+            <v-text-field v-model="formData.name" label="Nome" :rules="[rules.required]" type="text" variant="outlined" class="mb-4"></v-text-field>
+            <v-text-field v-model="formData.email" label="Email" :rules="[rules.required, rules.email]" type="email" variant="outlined" class="mb-4"></v-text-field>
+            <v-text-field
+               v-model="formData.password"
+               :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
+                :type="visible ? 'text' : 'password'"
+                label="Senha"
+               :rules="[rules.required, rules.counter]"
+               @click:append-inner="visible = !visible"
+               variant="outlined"
+               class="mb-4">
+              </v-text-field>
 
             <v-btn :disabled="!valid" color="primary" class="w-100 mb-3" type="submit" size="large">Cadastrar</v-btn>
 
@@ -36,6 +45,49 @@
 
 
 <script setup>
+
+import axios from 'axios';
+
+//const urlAPI = 'https://api.areteacademy.com.br/api';
+
+
+//const urlAPI = 'http://ec2-184-73-3-165.compute-1.amazonaws.com:500/api';
+
+
+
+const formData = ref({
+  name: '',
+  email: '',
+  password: ''
+});
+
+async function createUser(){
+
+
+
+
+  try {
+    const response = await axios.get('http://127.0.0.1/ProteusCRM/api/usuarios/create');
+    console.log(response);
+  } catch (error) {
+    notification.error('Erro ao cadastrar usuário: ' + error.message);
+  }
+}
+/*
+fetch('http://127.0.0.1/ProteusCRM/api/usuarios/create', formData)
+  .then(res => res.json())
+  .then(console.log)
+  .catch(error => {
+    Notification.error('Erro ao cadastrar usuário: ' + error.message);
+  }
+
+  );
+    Notification.success('Usuário cadastrado com sucesso!');
+  } catch (error) {
+    Notification.error('Erro ao cadastrar usuário: ' + error.message);
+  }
+    */
+
 
 
 const rules = {
@@ -55,9 +107,10 @@ function sumbeterFormulario(){
     alert('Formulário inválido');
   }
 
-  alert('Formulário enviado com sucesso');
-
+  createUser();
 }
+
+const visible = ref(false);
 
 </script>
 
