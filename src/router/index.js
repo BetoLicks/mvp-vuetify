@@ -12,6 +12,12 @@ const router = createRouter({
             name: 'login',
             component: () => import('@/pages/LoginPage.vue'),
           },
+          {
+            path: 'register',
+            name: 'register',
+            component: () => import('@/pages/RegisterPage.vue'),
+          },
+
        ]
     },
     {
@@ -27,7 +33,12 @@ const router = createRouter({
         path: '/category',
         name: 'category',
         component: () => import('@/pages/CategoryPage.vue'),
-      }
+      },
+      {
+        path: '/product',
+        name: 'product',
+        component: () => import('@/pages/ProductPage.vue'),
+      },
 
     ]
   }],

@@ -26,7 +26,7 @@
               ou
             </div>
 
-            <v-btn color="primary" variant="outlined" class="w-100" type="submit" size="large">Cadastre-se</v-btn>
+            <v-btn :to="{ name: 'register' }" color="primary" variant="outlined" class="w-100" type="submit" size="large">Cadastre-se</v-btn>
           </v-form>
         </div>
       </v-col>
