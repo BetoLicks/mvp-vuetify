@@ -11,7 +11,7 @@
 
       <v-col class="d-flex align-center justify-center" cols="12" md="6">
         <div class="w-100" style="max-width: 400px;">
-          <v-form @click.prevent="">
+          <v-form v-model="valid" @submit.prevent="sumbeterFormulario">
             <div class="text-center mb-6">
               <h2 class="text-primary">Faça seu cadastro</h2>
             </div>
@@ -20,7 +20,7 @@
             <v-text-field label="Email" :rules="[rules.required, rules.email]" type="email" variant="outlined" class="mb-4"></v-text-field>
             <v-text-field label="Senha" :rules="[rules.required, rules.counter]" type="password" variant="outlined" class="mb-4"></v-text-field>
 
-            <v-btn color="primary" class="w-100 mb-3" type="submit" size="large">Cadastrar</v-btn>
+            <v-btn :disabled="!valid" color="primary" class="w-100 mb-3" type="submit" size="large">Cadastrar</v-btn>
 
             <div class="text-center mb-3">
               ou
@@ -48,6 +48,16 @@ const rules = {
 
 }
 
+const valid = ref(false);
+
+function sumbeterFormulario(){
+  if (!valid.value){
+    alert('Formulário inválido');
+  }
+
+  alert('Formulário enviado com sucesso');
+
+}
 
 </script>
 
