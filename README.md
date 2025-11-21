@@ -1,6 +1,6 @@
 # modulo5-vuetify
 
-This template should help get you started developing with Vue 3 in Vite.
+This MVP is part of the Vue.js expert course using Vuetify.
 
 ## Recommended IDE Setup
 
