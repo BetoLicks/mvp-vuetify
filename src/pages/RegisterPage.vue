@@ -16,14 +16,30 @@
               <h2 class="text-primary">Faça seu cadastro</h2>
             </div>
 
-            <v-text-field v-model="formData.nome" label="Nome" :rules="[rules.required]" type="text" variant="outlined" class="mb-4"></v-text-field>
-            <v-text-field v-model="formData.email" label="Email" :rules="[rules.required, rules.email]" type="email" variant="outlined" class="mb-4"></v-text-field>
+            <v-text-field
+              v-model="formData.nome"
+              label="Nome"
+              :rules="[rules.required, rules.fullName]"
+              type="text"
+              variant="outlined"
+              class="mb-4">
+            </v-text-field>
+
+            <v-text-field
+               v-model="formData.email"
+               label="Email"
+               :rules="[rules.required, rules.email]"
+               type="email"
+               variant="outlined"
+               class="mb-4">
+            </v-text-field>
+
             <v-text-field
                v-model="formData.senha"
                :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
                 :type="visible ? 'text' : 'password'"
                 label="Senha"
-               :rules="[rules.required, rules.maxLength, rules.minLength]"
+               :rules="[rules.required, rules.maxLength, rules.minLength, rules.passwordStrength]"
                @click:append-inner="visible = !visible"
                variant="outlined"
                maxlength="12"
@@ -57,13 +73,6 @@ const notification = useNotification();
 
 const router = useRouter();
 
-//const urlAPI = 'https://api.areteacademy.com.br/api';
-
-
-//const urlAPI = 'http://ec2-184-73-3-165.compute-1.amazonaws.com:500/api';
-
-
-
 const formData = ref({
   name: '',
   email: '',
@@ -89,6 +98,26 @@ const rules = {
 
   maxLength: value => !value || value.length <= 12 || 'Máximo de 12 caracteres.',
   minLength: value => !value || value.length >= 6 || 'Mínimo de 6 caracteres.',
+
+  fullName: value => {
+      if (!value) return 'É necessário informar o nome completo.';
+      const words = value.trim().split(/\s+/).filter(word => word.length > 0);
+      return words.length >= 2 || 'Informe nome e sobrenome.';
+    },
+
+  passwordStrength: value => {
+      if (!value) return 'É necessário informar a senha.';
+
+      const hasUpperCase = /[A-Z]/.test(value);
+      const hasLowerCase = /[a-z]/.test(value);
+      const hasSpecialChar = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(value);
+
+      if (!hasUpperCase) return 'A senha deve conter pelo menos uma letra maiúscula.';
+      if (!hasLowerCase) return 'A senha deve conter pelo menos uma letra minúscula.';
+      if (!hasSpecialChar) return 'A senha deve conter pelo menos um caractere especial.';
+
+      return true;
+    }
 }
 
 const valid = ref(false);
