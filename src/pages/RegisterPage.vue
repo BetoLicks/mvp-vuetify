@@ -23,9 +23,10 @@
                :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
                 :type="visible ? 'text' : 'password'"
                 label="Senha"
-               :rules="[rules.required, rules.counter]"
+               :rules="[rules.required, rules.maxLength, rules.minLength]"
                @click:append-inner="visible = !visible"
                variant="outlined"
+               maxlength="12"
                class="mb-4">
               </v-text-field>
 
@@ -83,10 +84,11 @@ const rules = {
   required: value => !!value || 'É necessário informar este campo.',
   email: value => {
       const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-      return pattern.test(value) || 'Invalid e-mail.'
+      return pattern.test(value) || 'E-mail inválido.'
     },
-  counter: value => value.length <= 20 || 'Max 20 characters',
 
+  maxLength: value => !value || value.length <= 12 || 'Máximo de 12 caracteres.',
+  minLength: value => !value || value.length >= 6 || 'Mínimo de 6 caracteres.',
 }
 
 const valid = ref(false);
