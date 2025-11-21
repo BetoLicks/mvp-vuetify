@@ -67,12 +67,12 @@
                :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
                 :type="visible ? 'text' : 'password'"
                 label="Senha"
-               :rules="[rules.required, rules.maxLength, rules.minLength, rules.passwordStrength]"
+               :rules="[rules.required, rules.maxLength, rules.minLength]"
                @click:append-inner="visible = !visible"
                variant="outlined"
                maxlength="12"
                class="mb-4">
-              </v-text-field>
+            </v-text-field>
 
             <v-btn :disabled="!valid" color="primary" class="w-100 mb-3" type="submit" size="large">Cadastrar</v-btn>
 
@@ -104,12 +104,24 @@ const router = useRouter();
 const formData = ref({
   name: '',
   email: '',
+  senha: '',
   cpf: '',
-  telefone: '',
-  password: ''
+  telefone: ''
 });
-
+                
+const urlAPI = 'http://127.0.0.1/ProtheusCRM/api/usuarios';
 async function createUser(){
+  try{
+    await axios.post(urlAPI + '/create', formData.value);
+  } catch (error){
+    console.log(error);
+  }
+
+
+
+
+/*
+  {}
   try {
     // Remove formatação antes de enviar para o backend
     const dataToSend = {
@@ -118,12 +130,12 @@ async function createUser(){
       telefone: formData.value.telefone.replace(/\D/g, '')
     };
 
-    await axios.get('http://127.0.0.1/ProteusCRM/api/usuarios/create', dataToSend);
+    await axios.post('http://127.0.0.1/ProteusCRM/api/usuarios/create', dataToSend);
     notification.success('Usuário cadastrado com sucesso!');
     router.push({ name: 'login' });
   } catch (error) {
     notification.error('Erro ao cadastrar usuário: ' + error.message);
-  }
+  }*/
 }
 
 // Função para formatar CPF
@@ -172,20 +184,6 @@ const rules = {
       if (!value) return 'É necessário informar o nome completo.';
       const words = value.trim().split(/\s+/).filter(word => word.length > 0);
       return words.length >= 2 || 'Informe nome e sobrenome.';
-    },
-
-  passwordStrength: value => {
-      if (!value) return 'É necessário informar a senha.';
-
-      const hasUpperCase = /[A-Z]/.test(value);
-      const hasLowerCase = /[a-z]/.test(value);
-      const hasSpecialChar = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(value);
-
-      if (!hasUpperCase) return 'A senha deve conter pelo menos uma letra maiúscula.';
-      if (!hasLowerCase) return 'A senha deve conter pelo menos uma letra minúscula.';
-      if (!hasSpecialChar) return 'A senha deve conter pelo menos um caractere especial.';
-
-      return true;
     },
 
     cpf: value => {
