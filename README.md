@@ -1,6 +1,6 @@
 # modulo5-vuetify
 
-This MVP is part of the Vue.js expert course using Vuetify.
+This MVP is part of the Vue.js expert course using Vuetify. @𝐏𝐌𝐨𝐧𝐭𝐞𝐢𝐫𝐨13
 
 ## Recommended IDE Setup
 

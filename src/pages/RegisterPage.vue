@@ -22,6 +22,7 @@
               :rules="[rules.required, rules.fullName]"
               type="text"
               variant="outlined"
+              @input="e => formData.nome = e.target.value.toUpperCase()"
               class="mb-4">
             </v-text-field>
 
@@ -31,8 +32,35 @@
                :rules="[rules.required, rules.email]"
                type="email"
                variant="outlined"
+               @input="e => formData.email = e.target.value.toLowerCase()"
                class="mb-4">
             </v-text-field>
+
+            <v-row class="mb-4">
+              <v-col cols="12" sm="6">
+                <v-text-field
+                  v-model="formData.cpf"
+                  label="CPF"
+                  :rules="[rules.required, rules.cpf]"
+                  type="text"
+                  variant="outlined"
+                  @input="formatCPF"
+                  placeholder="000.000.000-00">
+                </v-text-field>
+              </v-col>
+
+              <v-col cols="12" sm="6">
+                <v-text-field
+                  v-model="formData.telefone"
+                  label="Telefone"
+                  :rules="[rules.required, rules.phone]"
+                  type="text"
+                  variant="outlined"
+                  placeholder="(00) 00000-0000"
+                  @input="formatTelefone">
+                </v-text-field>
+              </v-col>
+            </v-row>
 
             <v-text-field
                v-model="formData.senha"
@@ -76,17 +104,58 @@ const router = useRouter();
 const formData = ref({
   name: '',
   email: '',
+  cpf: '',
+  telefone: '',
   password: ''
 });
 
 async function createUser(){
   try {
-    await axios.get('http://127.0.0.1/ProteusCRM/api/usuarios/create',...formData.value);
+    // Remove formatação antes de enviar para o backend
+    const dataToSend = {
+      ...formData.value,
+      cpf: formData.value.cpf.replace(/\D/g, ''),
+      telefone: formData.value.telefone.replace(/\D/g, '')
+    };
+
+    await axios.get('http://127.0.0.1/ProteusCRM/api/usuarios/create', dataToSend);
     notification.success('Usuário cadastrado com sucesso!');
     router.push({ name: 'login' });
   } catch (error) {
     notification.error('Erro ao cadastrar usuário: ' + error.message);
   }
+}
+
+// Função para formatar CPF
+function formatCPF(event) {
+  let value = event.target.value.replace(/\D/g, '');
+
+  if (value.length <= 11) {
+    value = value.replace(/(\d{3})(\d)/, '$1.$2');
+    value = value.replace(/(\d{3})(\d)/, '$1.$2');
+    value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+  }
+
+  formData.value.cpf = value;
+}
+
+// Função para formatar Telefone
+function formatTelefone(event) {
+  let value = event.target.value.replace(/\D/g, '');
+
+  if (value.length <= 11) {
+    if (value.length <= 10) {
+      // Formato: (00) 0000-0000
+      value = value.replace(/(\d{2})(\d)/, '($1) $2');
+      value = value.replace(/(\d{4})(\d)/, '$1-$2');
+    } else {
+      // Formato: (00) 00000-0000
+      value = value.replace(/(\d{2})(\d)/, '($1) $2');
+      value = value.replace(/(\d{5})(\d)/, '$1-$2');
+    }
+  }
+
+  formData.value.telefone = value;
 }
 
 const rules = {
@@ -117,6 +186,18 @@ const rules = {
       if (!hasSpecialChar) return 'A senha deve conter pelo menos um caractere especial.';
 
       return true;
+    },
+
+    cpf: value => {
+      if (!value) return 'CPF é obrigatório.';
+      const cpfLimpo = value.replace(/\D/g, '');
+      return cpfLimpo.length === 11 || 'CPF deve ter 11 dígitos.';
+    },
+
+    phone: value => {
+      if (!value) return 'Telefone é obrigatório.';
+      const telefoneLimpo = value.replace(/\D/g, '');
+      return (telefoneLimpo.length === 10 || telefoneLimpo.length === 11) || 'Telefone inválido.';
     }
 }
 
@@ -125,6 +206,7 @@ const valid = ref(false);
 function sumbeterFormulario(){
   if (!valid.value){
     alert('Formulário inválido');
+    return;
   }
 
   createUser();
@@ -133,4 +215,3 @@ function sumbeterFormulario(){
 const visible = ref(false);
 
 </script>
-
