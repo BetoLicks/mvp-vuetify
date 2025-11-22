@@ -103,16 +103,18 @@
 </template>
 
 <script setup>
-import axios from 'axios'
 
 import { useNotification } from '@/composables/useNotification'
 
+import { useApi } from '@/composables/useApi'
+
 import { useRouter } from 'vue-router'
 
+const valid = ref(false)
+const api = useApi()
 const notification = useNotification()
-
 const router = useRouter()
-
+const visible = ref(false)
 const formData = ref({
   nome: '',
   cpf: '',
@@ -121,10 +123,9 @@ const formData = ref({
   senha: '',
 })
 
-const urlAPI = 'http://127.0.0.1/ProtheusCRM/api/usuarios'
 async function createUser() {
   try {
-    await axios.post(urlAPI + '/create', formData.value)
+    await api.post('/create', formData.value)
     notification.success('Usuário cadastrado com sucesso!')
     router.push({ name: 'login' })
   } catch (error) {
@@ -198,8 +199,6 @@ const rules = {
   },
 }
 
-const valid = ref(false)
-
 function sumbeterFormulario() {
   if (!valid.value) {
     alert('Formulário inválido')
@@ -209,5 +208,5 @@ function sumbeterFormulario() {
   createUser()
 }
 
-const visible = ref(false)
+
 </script>

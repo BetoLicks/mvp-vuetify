@@ -1,39 +1,45 @@
-import axios from 'axios';
+import axios from 'axios'
 
 export function useApi(baseUrl) {
-  const apiBaseUrl = baseUrl || import.meta.env.VIT_API_BASE_URL;
+  const apiBaseUrl = baseUrl || import.meta.env.VITE_API_BASE_URL
   const TOKEN = 'v-token'
+
+  console.log('API Base URL:', apiBaseUrl)
+  console.log('Token Key:', TOKEN)
+
   const apiClient = axios.create({
     baseURL: apiBaseUrl,
     timeout: 30000,
     headers: {
       'Content-Type': 'application/json',
       Accept: 'application/json',
-    }
+    },
   })
 
-  apiClient.interceptors.request.use(config => {
+  // --- Interceptor de request ---
+  apiClient.interceptors.request.use(
     async (config) => {
-      const token = localStorage.getItem(TOKEN);
+      const token = localStorage.getItem(TOKEN)
+
       if (token) {
-        config.headers['Authorization'] = `Bearer ${token}`;
+        config.headers['Authorization'] = `Bearer ${token}`
       }
-      return config;
+
+      return config
     },
-    error => {
-      return Promise.reject(error);
-    }
-
-
-
-  apiClient.interceptors.response.use(
-    response => response,
     (error) => {
-      console.error('API Error:', error.response || error.message || error);
-      return Promise.reject(error)
-    }
+      Promise.reject(error)
+    },
   )
 
+  // --- Interceptor de response ---
+  apiClient.interceptors.response.use(
+    (response) => response,
+    (error) => {
+      console.error('API Error:', error?.response || error.message || error)
+      return Promise.reject(error)
+    },
+  )
 
-  return apiClient;
+  return apiClient
 }
