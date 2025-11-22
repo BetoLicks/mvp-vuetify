@@ -4,9 +4,6 @@ export function useApi(baseUrl) {
   const apiBaseUrl = baseUrl || import.meta.env.VITE_API_BASE_URL
   const TOKEN = 'v-token'
 
-  console.log('API Base URL:', apiBaseUrl)
-  console.log('Token Key:', TOKEN)
-
   const apiClient = axios.create({
     baseURL: apiBaseUrl,
     timeout: 30000,

@@ -11,7 +11,7 @@
 
       <v-col class="d-flex align-center justify-center" cols="12" md="6">
         <div class="w-100" style="max-width: 400px;">
-          <v-form @submit.prevent="sumbeterFormulario">
+          <v-form v-model="valid" @submit.prevent="sumbeterFormulario">
             <div class="text-center mb-6">
               <h2 class="text-primary">Login</h2>
             </div>
@@ -54,22 +54,19 @@
 <script setup>
 
 import { useNotification } from '@/composables/useNotification'
-
-import { useRouter } from 'vue-router'
 import { useApi } from '@/composables/useApi'
+import { useRouter } from 'vue-router'
 
 const valid = ref(false)
 const api = useApi();
 const router = useRouter()
 const visible = ref(false)
-
 const notification = useNotification()
 
 const formData = ref({
   email: '',
   senha: '',
 })
-
 
 const rules = {
   required: (value) => !!value || 'É necessário informar este campo.',
@@ -83,8 +80,6 @@ const rules = {
   minLength: (value) => !value || value.length >= 6 || 'Mínimo de 6 caracteres.',
 }
 
-
-
 function sumbeterFormulario() {
   if (!valid.value) {
     notification.error('Erro ao enviar o formulário. Verifique os campos preenchidos.')
@@ -96,12 +91,16 @@ function sumbeterFormulario() {
 
 async function LoginUser() {
   try {
-    await api.post('/user/login', formData.value)
-    notification.success('Login realizado com sucesso!')
-    router.push({ name: 'home' })
+    const response =await api.post('/usuarios/login', formData.value)
+    if (response.data.token){
+       sessionStorage.setItem('v-token', JSON.stringify(response.data.usuario))
+       notification.success('Login realizado com sucesso!')
+       router.push({ name: 'home' })
+    } else {
+       notification.error('Login falhou: Token não recebido.')
+    }
   } catch (error) {
-    sessionStorage.setItem('erro', error.message)
-    notification.error('Erro ao logar: ' + error.message)
+    notification.error('Não foi possível realizar o login: ' + error.message)
   }
 }
 </script>

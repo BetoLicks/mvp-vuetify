@@ -105,16 +105,15 @@
 <script setup>
 
 import { useNotification } from '@/composables/useNotification'
-
 import { useApi } from '@/composables/useApi'
-
 import { useRouter } from 'vue-router'
 
 const valid = ref(false)
 const api = useApi()
-const notification = useNotification()
 const router = useRouter()
 const visible = ref(false)
+const notification = useNotification()
+
 const formData = ref({
   nome: '',
   cpf: '',
@@ -125,7 +124,7 @@ const formData = ref({
 
 async function createUser() {
   try {
-    await api.post('/create', formData.value)
+    await api.post('/usuarios/create', formData.value)
     notification.success('Usuário cadastrado com sucesso!')
     router.push({ name: 'login' })
   } catch (error) {
