@@ -1,6 +1,12 @@
 <template>
   <ContainerDefault>
-    <h1>Category Page</h1>
+    <div class="d-flex justify-space-between">
+      <h1>Category Page</h1>
+      <v-btn prepend-icon="$plus" color="primary">
+        Incluir
+      </v-btn>
+    </div>
+
 
     <v-data-table :items="catecories" :items-per-page="10"></v-data-table>
 
