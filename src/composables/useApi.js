@@ -29,7 +29,7 @@ export function useApi(baseUrl) {
     },
   )
 
-  // --- Interceptor de responsee ---
+  // --- Interceptor de responsees ---
   apiClient.interceptors.response.use(
     (response) => response,
     (error) => {
